@@ -23,7 +23,8 @@ public:
         add(key, JsonValue(value));
     }
 
-    void add(const char* key, JsonValue value)
+    template<typename T>
+    void add(const char* key, JsonValue<T> value)
     {
         if (itemCount >= N) return;
 
@@ -39,7 +40,8 @@ private:
     struct KeyValuePair
     {
         const char* key;
-        JsonValue value;
+        IWriteable* value;
+        JsonValueBuffer value;
     };
 
     KeyValuePair items[N];

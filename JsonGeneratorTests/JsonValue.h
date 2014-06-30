@@ -7,61 +7,41 @@
 
 #include "StringBuilder.h"
 
-class JsonObjectBase;
+class IWriteable
+{
+public:
+    virtual void writeTo(StringBuilder& sb) = 0;
+};
 
-class JsonValue
+template<typename T>
+class JsonValue : IWriteable
 {    
 public:
 
-    JsonValue()
+   /* JsonValue(T value)
+        : content(value)
     {
-    }
 
-    JsonValue(const char* value)
-        : type(JSON_STRING)
-    {
-        content.string = value;
-    }
-
-    JsonValue(double value)
-        : type(JSON_NUMBER)
-    {
-        content.number = value;
-    }
-
-    JsonValue(bool value)
-        : type(JSON_BOOLEAN)
-    {
-        content.boolean = value;
-    }
-
-    JsonValue(JsonObjectBase& value)
-        : type(JSON_OBJECT)
-    {
-        content.object = &value;
-    }
+    }*/
 
     void writeTo(StringBuilder& sb);
+   
+private:
+    JsonValue(const JsonValue& that) = delete;
+    
 
 private:
 
-    enum Type
-    {
-        JSON_STRING,
-        JSON_NUMBER,
-        JSON_BOOLEAN,
-        JSON_OBJECT,
-    };
+    T content;
+};
 
-    union Content
-    {
-        const char*     string;
-        double          number;
-        bool            boolean;
-        JsonObjectBase* object;
-    };
+class C
+{
+    virtual void toto() {}
+};
 
-    Type    type;
-    Content content;
+union JsonValueBuffer
+{
+    C boolean;
 };
 
