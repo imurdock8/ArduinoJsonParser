@@ -12,7 +12,7 @@ namespace ArduinoJson
 {
     namespace Generator
     {
-        class JsonValue : public Printable
+        class JsonValue
         {
         public:
 
@@ -56,7 +56,7 @@ namespace ArduinoJson
                 content.asString = value;
             }
 
-            virtual size_t printTo(Print& p) const;
+            size_t printTo(Print& p) const;
 
         private:
 
