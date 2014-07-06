@@ -21,80 +21,68 @@ namespace ArduinoJson
             }
 
             JsonValue(bool value)
-                : implementation(&JsonValue::printBoolTo)
+                : type(JSON_BOOLEAN)
             {
                 content.asBool = value;
             }
 
             JsonValue(double value, int digits = 2)
-                : implementation(&JsonValue::printDoubleTo)
+                : type(JSON_DOUBLE), digits(digits)
             {
-                content.asDouble.value = value;
-                content.asDouble.digits = digits;
-            }
-
-            JsonValue(float value)
-                : implementation(&JsonValue::printFloatTo)
-            {
-                content.asFloat = value;
+                content.asDouble = value;
             }
 
             JsonValue(long value)
-                : implementation(&JsonValue::printLongTo)
+                : type(JSON_LONG)
             {
                 content.asLong = value;
             }
 
             JsonValue(int value)
-                : implementation(&JsonValue::printLongTo)
+                : type(JSON_LONG)
             {
                 content.asLong = value;
             }
 
             JsonValue(Printable& value)
-                : implementation(&JsonValue::printPrintableTo)
+                : type(JSON_PRINTABLE)
             {
                 content.asPrintable = &value;
             }
 
             JsonValue(const char* value)
-                : implementation(&JsonValue::printStringTo)
+                : type(JSON_STRING)
             {
                 content.asString = value;
             }
 
-            virtual size_t printTo(Print& p) const
-            {
-                // handmade polymorphism
-                return (this->*implementation)(p);
-            }
+            virtual size_t printTo(Print& p) const;
 
         private:
 
             union Content
             {
                 bool        asBool;
-                float       asFloat;
+                double      asDouble;
                 long        asLong;
                 Printable*  asPrintable;
                 const char* asString;
+            };
 
-                struct {
-                    double value;
-                    int digits;
-                } asDouble;
+            enum Type : unsigned
+            {
+                JSON_BOOLEAN,
+                JSON_DOUBLE,
+                JSON_LONG,
+                JSON_PRINTABLE,
+                JSON_STRING,
             };
 
             Content content;
+            Type type : 3;
+            int digits : 5;
 
-            size_t(JsonValue::*implementation)(Print& p)const;
-
-            size_t printBoolTo(Print& p) const;
-            size_t printDoubleTo(Print& p) const;
-            size_t printFloatTo(Print& p) const;
-            size_t printLongTo(Print& p) const;
-            size_t printPrintableTo(Print& p) const;
-            size_t printStringTo(Print& p) const;
+            size_t JsonValue::printStringTo(Print& p) const;
         };
     }
 }

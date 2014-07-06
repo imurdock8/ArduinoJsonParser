@@ -7,32 +7,31 @@
 
 using namespace ArduinoJson::Generator;
 
-size_t JsonValue::printBoolTo(Print& p) const
+size_t JsonValue::printTo(Print& p) const
 {
-    return p.print(content.asBool ? "true" : "false");
-}
+    switch (type)
+    {
+    case ArduinoJson::Generator::JsonValue::JSON_BOOLEAN:
+        return p.print(content.asBool ? "true" : "false");
 
-size_t JsonValue::printDoubleTo(Print& p) const
-{
-    return p.print(content.asDouble.value, content.asDouble.digits);
-}
+    case ArduinoJson::Generator::JsonValue::JSON_DOUBLE:
+        return p.print(content.asDouble, digits);
 
-size_t JsonValue::printFloatTo(Print& p) const
-{
-    return p.print(content.asFloat);
-}
+    case ArduinoJson::Generator::JsonValue::JSON_LONG:
+        return p.print(content.asLong);
 
-size_t JsonValue::printLongTo(Print& p) const
-{
-    return p.print(content.asLong);
-}
+    case ArduinoJson::Generator::JsonValue::JSON_PRINTABLE:
+        if (content.asPrintable)
+            return content.asPrintable->printTo(p);
+        else
+            return p.print("null");
 
-size_t JsonValue::printPrintableTo(Print& p) const
-{
-    if (content.asPrintable)
-        return ((Printable*) content.asPrintable)->printTo(p);
-    else
-        return p.print("null");
+    case ArduinoJson::Generator::JsonValue::JSON_STRING:
+        return printStringTo(p);
+
+    default:
+        return 0;
+    }    
 }
 
 size_t JsonValue::printStringTo(Print& p) const
