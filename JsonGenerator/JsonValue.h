@@ -69,7 +69,7 @@ namespace ArduinoJson
                 const char* asString;
             };
 
-            enum Type : unsigned
+            enum Type
             {
                 JSON_BOOLEAN,
                 JSON_DOUBLE,
@@ -79,10 +79,10 @@ namespace ArduinoJson
             };
 
             Content content;
-            Type type : 3;
-            int digits : 5;
+            uint8_t type : 3;
+            uint8_t digits : 5;
 
-            size_t JsonValue::printStringTo(Print& p) const;
+            size_t printStringTo(Print& p) const;
         };
     }
 }
